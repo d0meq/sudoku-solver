@@ -1,3 +1,6 @@
+import generator
+import csv
+
 N = 9
 
 def printing(arr):
@@ -9,7 +12,7 @@ def printing(arr):
 def isSafe(grid, row, col, num):
     for x in range(9):
         if grid[row][x] == num:
-            return  False
+            return False
     
     for x in range(9):
         if grid[x][col] == num:
@@ -44,18 +47,30 @@ def solveSudoku(grid, row, col):
         grid[row][col] = 0
     return False
 
-grid = [[8, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 3, 6, 0, 0, 0, 0, 0],
-        [0, 7, 0, 0, 9, 0, 0, 2, 0],
-        [0, 5, 0, 0, 0, 7, 0, 0, 0],
-        [0, 0, 0, 0, 4, 5, 7, 0, 0],
-        [0, 0, 0, 1, 0, 0, 0, 3, 0],
-        [0, 0, 1, 0, 0, 0, 0, 6, 8],
-        [0, 0, 8, 5, 0, 0, 0, 1, 0],
-        [0, 9, 0, 0, 0, 0, 4, 0, 0]]
+def save_to_csv(grid, filename):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for row in grid:
+            writer.writerow(row)
 
-if(solveSudoku(grid, 0, 0)):
-    printing(grid)
+# Generate the Sudoku puzzle
+puzzle = generator.generate_sudoku_puzzle(num_to_remove=30)
+
+# Print the generated puzzle
+print('Generated Puzzle: \n')
+printing(puzzle)
+print('-------------------------')
+
+# Make a copy of the puzzle to solve
+grid_to_solve = [row[:] for row in puzzle]
+
+# Solve the puzzle
+if solveSudoku(grid_to_solve, 0, 0):
+    print('Solved Puzzle: \n')
+    printing(grid_to_solve)
+    
+    # Save the solved puzzle to a CSV file
+    save_to_csv(grid_to_solve, 'solved_sudoku.csv')
+    print('Solved Sudoku has been saved to solved_sudoku.csv')
 else:
-    print("no solution exists")
-
+    print("No solution exists")
